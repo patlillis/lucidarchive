@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- ȆȝǄȑȍȒȋțȉȍȗȅȑșȉȐǒȇȓȑ -->
+<html lang="en" ng-app="v4w3App">
+<head>
+
+  <!-- post-ironic humor
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Your page title here :)</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- meta-post-ironic humor
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <!-- bourgeoisie
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <!--<link rel="stylesheet" href="css/skeleton.css">-->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- proletariat
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular.min.js"></script>
+  <script src="script.js"></script>
+
+  <!-- corporate branding
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+<body ng-controller="MainController">
+  <navbar>
+    <div class="container">
+      <h1>virtualplaza.xyz</h1>
+      <h4>enjoy your stay and come again</h4>
+    </div>
+  </navbar>
+  <div class="controls">
+    <div class="container">
+      <span>sort</span>
+      <input type="text" name="filter" style="float: right;" ng-model="query" />
+    </div>
+  </div>
+  <div>
+    <div class="container">
+      <div class="gallery">
+        <a ng-repeat="album in db | filter:query | orderBy:'-Date'" ng-href="#{{album.Uid}}">
+          <div class="album">
+            <div ng-style="{'background-image':'url(\'' + album.Art + '\')'}"></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
