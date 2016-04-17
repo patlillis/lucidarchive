@@ -52,7 +52,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
 });
 
 vpApp.controller('ListController', function($scope) {
-  $scope.sortField = 'Art';
+  $scope.sortField = 'Date';
   
   $scope.sorter = function(val) {
     return val[$scope.sortField];
