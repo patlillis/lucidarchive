@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <!-- ȆȝǄȑȍȒȋțȉȍȗȅȑșȉȐǒȇȓȑ -->
-<html lang="en" ng-app="v4w3App">
+<html lang="en" ng-app="vpApp">
 <head>
 
   <!-- post-ironic humor
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Your page title here :)</title>
+  <title>virtualplaza.xyz</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -18,42 +18,23 @@
   <!-- bourgeoisie
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="css/normalize.css">
-  <!--<link rel="stylesheet" href="css/skeleton.css">-->
+  <link rel="stylesheet" href="css/skeleton_crop.css">
   <link rel="stylesheet" href="css/styles.css">
   
   <!-- proletariat
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular-route.min.js"></script>
   <script src="script.js"></script>
 
   <!-- corporate branding
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" href="images/favicon.png">
 
 </head>
 <body ng-controller="MainController">
-  <navbar>
-    <div class="container">
-      <h1>virtualplaza.xyz</h1>
-      <h4>enjoy your stay and come again</h4>
-    </div>
-  </navbar>
-  <div class="controls">
-    <div class="container">
-      <span>sort</span>
-      <input type="text" name="filter" style="float: right;" ng-model="query" />
-    </div>
-  </div>
-  <div>
-    <div class="container">
-      <div class="gallery">
-        <a ng-repeat="album in db | filter:query | orderBy:'-Date'" ng-href="#{{album.Uid}}">
-          <div class="album">
-            <div ng-style="{'background-image':'url(\'' + album.Art + '\')'}"></div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div>
+  <div ng-view></div>
 </body>
 </html>

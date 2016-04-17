@@ -1,9 +1,10 @@
 var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
 
-var v4w3App = angular.module('v4w3App', []);
+var vpApp = angular.module('vpApp', ['ngRoute']);
 
-v4w3App.controller('MainController', function ($scope, $http) {
-  $http.get(dbUrl).then(function(res) {
+vpApp.controller('MainController', function($scope, $http, $q) {
+  
+  $scope.dbPromise = $http.get(dbUrl).then(function(res) {
     //create table
     var cells = res.data.feed.entry;
     var table = [];
@@ -30,7 +31,7 @@ v4w3App.controller('MainController', function ($scope, $http) {
     for (var r = 1; r < table.length; r++) {
       if (!table[r])
         continue;
-      dbRow = {};
+      var dbRow = {};
       for (var c = 0; c < head.length - 1; c++) {
         if (!tableInput[r][c])
           continue;
@@ -44,7 +45,43 @@ v4w3App.controller('MainController', function ($scope, $http) {
 
       db.push(dbRow);
     }
-    
+
+    $scope.sortFields = head;
     $scope.db = db;
+  });
+});
+
+vpApp.controller('ListController', function($scope) {
+  $scope.sortField = 'Art';
+  
+  $scope.sorter = function(val) {
+    return val[$scope.sortField];
+  };
+  
+  $scope.hasSortField = function(val) {
+    return !!val[$scope.sortField];
+  };
+});
+
+vpApp.controller('DetailController', function($scope, $filter, $routeParams) {
+  $scope.$parent.dbPromise.then(function() {
+    var albums = $filter('filter')($scope.$parent.db, { UID: $routeParams.uid});
+    if (!albums)
+      return console.log('none found'); //do something
+    $scope.album = albums[0];
+  });
+});
+
+vpApp.config(function($routeProvider) {
+  $routeProvider.when('/', {
+    templateUrl: 'partials/home.html',
+    controller: 'ListController'
+  }).
+  when('/:uid', {
+    templateUrl: 'partials/detail.html',
+    controller: 'DetailController'
+  }).
+  otherwise({
+    redirectTo: '/'
   });
 });

@@ -1,0 +1,36 @@
+<navbar>
+  <div class="container">
+    <h1>virtualplaza.xyz</h1>
+    <h4>enjoy your stay and come again</h4>
+  </div>
+</navbar>
+<div class="controls">
+  <div class="container">
+    <span>
+      <label>sort:</label>
+      <select ng-model="sortField" style="max-width: 20%; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+        <option ng-repeat="field in sortFields" value="{{field}}" ng-bind="field | uppercase"></option>
+      </select><input type="button" ng-value="{true: '\u25BC', false: '\u25B2'}[!!sortReverse]" ng-click="sortReverse = !sortReverse" style="border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px;" />
+    </span>
+    <span class="u-pull-right">
+      <label>search:</label>
+      <input type="text" name="filter" ng-model="query" />
+    </span>
+  </div>
+</div>
+<div style="min-height: 300px;">
+  <div class="container">
+    <div class="gallery">
+      <a ng-repeat="album in db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField" ng-href="#{{album.UID}}">
+        <div class="album">
+          <div ng-style="{'background-image':'url(\'' + album.Art + '\')'}"></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="controls">
+  <div class="container">
+    <a href="mailto:capitalism@virtualplaza.xyz">Submit/Suggest</a>
+  </div>
+</div>

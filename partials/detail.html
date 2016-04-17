@@ -1,0 +1,19 @@
+<div>
+  <div class="container">
+    <img ng-src="{{album.Art}}" alt="{{album.Title}} cover art"/>
+    <table class="u-full-width">
+      <tr ng-repeat="(key, value) in album" ng-switch="key">
+        <td ng-bind="key"></td>
+        <td ng-switch-when="Citations">
+          <ul>
+            <li ng-repeat="url in value"><a ng-href="{{url}}" ng-bind="url"></a></li>
+          </ul>
+        </td>
+        <td ng-switch-when="Art">
+          <a ng-href="{{value}}" ng-bind="value"></a>
+        </td>
+        <td ng-switch-default ng-bind="value"></td>
+      </tr>
+    </table>
+  </div>
+</div>
