@@ -9,6 +9,11 @@
   <title>virtualplaza.xyz</title>
   <meta name="description" content="welcome to virtualplaza.xyz">
   <meta name="author" content="">
+  
+  <meta property="og:site_name" content="virtualplaza.xyz"/>
+  <meta property="og:title" content="welcome to virtualplaza.xyz"/>
+  <meta property="og:description" content="enjoy your stay and come again"/>
+  <meta property="og:image" content="images/favicon.png">
 
   <!-- meta-post-ironic humor
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -35,7 +40,7 @@
 
 </head>
 <body ng-controller="MainController">
-  <img style="display: none;" src="images/favicon.png" alt="welcome to virtualplaza.xyz "/>
+  <img ng-hide="db" class="loading" src="images/favicon.png" alt="welcome to virtualplaza.xyz "/>
   <div ng-view autoscroll></div>
 </body>
 </html>
