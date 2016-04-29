@@ -23,7 +23,7 @@
     <div class="gallery">
       <a ng-repeat="album in db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField" ng-href="#{{album.UID}}">
         <div class="album">
-          <div ng-style="{'background-image':'url(\'' + album.thumb + '\')'}"></div>
+          <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}"></div>
         </div>
       </a>
     </div>

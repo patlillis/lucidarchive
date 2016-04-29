@@ -39,7 +39,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
         if ('Art'.indexOf(head[c]) === 0) {
           var arr = tableInput[r][c].split('"');
           dbRow[head[c]] = arr[1];
-          dbRow['thumb'] = arr[3] || arr[1];
+          dbRow['Thumbnail'] = arr[3] || arr[1];
         }
         else
           dbRow[head[c]] = table[r][c];
