@@ -2,6 +2,15 @@ var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V
 
 var vpApp = angular.module('vpApp', ['ngRoute']);
 
+
+//<iframe style="border: 0; width: 100%; height: 472px;" src="https://bandcamp.com/EmbeddedPlayer/album=4192345025/size=large/bgcol=ffffff/linkcol=0687f5/artwork=none/transparent=true/" seamless><a href="http://computer-gaze.bandcamp.com/album/computer-afterlife">Computer Afterlife by Infinity Frequencies</a></iframe>
+angular.module('vpApp')
+  .filter('bandcampEmbed', function ($sce) {
+    return function(bcid) {
+      return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + bcid + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
+    };
+  });
+
 vpApp.controller('MainController', function($scope, $http, $q) {
   
   $scope.dbPromise = $http.get(dbUrl).then(function(res) {
