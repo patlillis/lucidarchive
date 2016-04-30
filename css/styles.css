@@ -30,9 +30,12 @@ h6 { font-size: 1.9rem; line-height: 1.6;  letter-spacing: 0; }
 
 .loading {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: #000 url(../images/favicon.png) no-repeat center;
 }
 
 .lightbox {
