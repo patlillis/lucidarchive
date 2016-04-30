@@ -9,11 +9,12 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     var cells = res.data.feed.entry;
     var table = [];
     var tableInput = [];
+    var r, c;
 
     for (var i = 0; i < cells.length; i++) {
       var cell = cells[i];
-      var r = cell.gs$cell.row - 1;
-      var c = cell.gs$cell.col - 1;
+      r = cell.gs$cell.row - 1;
+      c = cell.gs$cell.col - 1;
 
       if (!table[r]) {
         table[r] = [];
@@ -28,18 +29,18 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     var db = [];
     var head = table[0];
 
-    for (var r = 1; r < table.length; r++) {
+    for (r = 1; r < table.length; r++) {
       if (!table[r])
         continue;
       var dbRow = {};
-      for (var c = 0; c < head.length - 1; c++) {
+      for (c = 0; c < head.length - 1; c++) {
         if (!tableInput[r][c])
           continue;
         var val;
         if ('Art'.indexOf(head[c]) === 0) {
           var arr = tableInput[r][c].split('"');
           dbRow[head[c]] = arr[1];
-          dbRow['Thumbnail'] = arr[3] || arr[1];
+          dbRow.Thumbnail = arr[3] || arr[1];
         }
         else
           dbRow[head[c]] = table[r][c];
@@ -80,7 +81,7 @@ vpApp.config(function($routeProvider) {
     templateUrl: 'partials/home.html',
     controller: 'ListController'
   }).
-  when('/:uid', {
+  when('/a/:uid', {
     templateUrl: 'partials/detail.html',
     controller: 'DetailController'
   }).
