@@ -6,6 +6,7 @@
       <iframe ng-switch-when="sc.p" scrolling="no" frameborder="no" style="border: 0; width: 100%; height: 500px;" ng-src="{{ album._stream | soundcloudPlaylistEmbed }}" seamless></iframe>
       <iframe ng-switch-when="sc.t" scrolling="no" frameborder="no" style="border: 0; width: 100%; height: 166px;" ng-src="{{ album._stream | soundcloudTrackEmbed }}" seamless></iframe>
       <iframe ng-switch-when="yt.v" frameborder="0" type="text/html" style="border: 1px solid #E1E1E1; width: 100%; height: 500px;" ng-src="{{ album._stream | youtubeVideoEmbed }}"></iframe>
+      <iframe ng-switch-when="spotify" frameborder="0" type="text/html" style="width: 100%; max-width: 	640px; height: 125vw; max-height: 720px;" ng-src="{{ album._stream | spotifyEmbed }}"></iframe>
     </div>
   </div>
   <div class="container">
