@@ -24,6 +24,8 @@ angular.module('vpApp')
     return function(id) {
       return $sce.trustAsResourceUrl('http://www.youtube.com/embed/' + encodeURIComponent(id));
     };
+  }).filter('decodeURI', function() {
+    return window.decodeURI;
   });/*
   .filter('truncate', function($sce) {
     return function(text, length) {

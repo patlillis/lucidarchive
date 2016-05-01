@@ -14,14 +14,14 @@
         <td ng-bind="key"></td>
         <td ng-switch-when="Citations" class="citations">
           <ul>
-            <li ng-repeat="url in value"><a ng-href="{{url}}" ng-bind="url"></a></li>
+            <li ng-repeat="url in value"><a target="_blank" ng-href="{{url}}" ng-bind="url | decodeURI"></a></li>
           </ul>
         </td>
         <td ng-switch-when="Art">
-          <a ng-href="{{value}}" ng-bind="value"></a>
+          <a target="_blank" ng-href="{{value}}" ng-bind="value"></a>
         </td>
         <td ng-switch-when="Thumbnail">
-          <a ng-href="{{value}}" ng-bind="value"></a>
+          <a target="_blank" ng-href="{{value}}" ng-bind="value"></a>
         </td>
         <td ng-switch-default ng-bind="value"></td>
       </tr>
