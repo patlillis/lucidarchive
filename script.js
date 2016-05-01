@@ -24,7 +24,15 @@ angular.module('vpApp')
     return function(id) {
       return $sce.trustAsResourceUrl('http://www.youtube.com/embed/' + encodeURIComponent(id));
     };
-  });;
+  });/*
+  .filter('truncate', function($sce) {
+    return function(text, length) {
+      if (isNaN(length)) return text;
+      if (text.length > length)
+        return text.substr(0, length - 1) + '…';
+      return text;
+    };
+  });//*/
 
 vpApp.controller('MainController', function($scope, $http, $q) {
   

@@ -12,7 +12,7 @@
     <table class="u-full-width">
       <tr ng-repeat="(key, value) in album" ng-switch="key">
         <td ng-bind="key"></td>
-        <td ng-switch-when="Citations">
+        <td ng-switch-when="Citations" class="citations">
           <ul>
             <li ng-repeat="url in value"><a ng-href="{{url}}" ng-bind="url"></a></li>
           </ul>

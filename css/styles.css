@@ -107,9 +107,17 @@ h6 { font-size: 120%; line-height: 1.6;  letter-spacing: 0; }
   float: left;
 }
 
+/* detail */
+
 img {
   width: 100%;
   max-width: 700px;
+}
+
+.citations li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* animations */
