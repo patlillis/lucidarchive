@@ -1,6 +1,14 @@
 <div>
   <div class="container">
     <img ng-src="{{album.Art}}" ckass="artDetail" alt="{{album.Title}} cover art"/>
+    <div ng-switch="album._streamType" style="padding-top: 20px;">
+      <iframe ng-switch-when="bc" style="border: 0; width: 100%; height: 400px;" ng-src="{{ album._stream | bandcampEmbed }}" seamless></iframe>
+      <iframe ng-switch-when="sc.p" scrolling="no" frameborder="no" style="border: 0; width: 100%; height: 500px;" ng-src="{{ album._stream | soundcloudPlaylistEmbed }}" seamless></iframe>
+      <iframe ng-switch-when="sc.t" scrolling="no" frameborder="no" style="border: 0; width: 100%; height: 166px;" ng-src="{{ album._stream | soundcloudTrackEmbed }}" seamless></iframe>
+      <iframe ng-switch-when="yt.v" frameborder="0" type="text/html" style="border: 1px solid #E1E1E1; width: 100%; height: 500px;" ng-src="{{ album._stream | youtubeVideoEmbed }}"></iframe>
+    </div>
+  </div>
+  <div class="container">
     <table class="u-full-width">
       <tr ng-repeat="(key, value) in album" ng-switch="key">
         <td ng-bind="key"></td>
@@ -18,6 +26,5 @@
         <td ng-switch-default ng-bind="value"></td>
       </tr>
     </table>
-    <iframe ng-if="album.BCID" style="border: 0; width: 100%; height: 472px; margin-top: 20px;" ng-src="{{ album.BCID | bandcampEmbed }}" seamless></iframe>
   </div>
 </div>

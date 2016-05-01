@@ -6,10 +6,25 @@ var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
 //<iframe style="border: 0; width: 100%; height: 472px;" src="https://bandcamp.com/EmbeddedPlayer/album=4192345025/size=large/bgcol=ffffff/linkcol=0687f5/artwork=none/transparent=true/" seamless><a href="http://computer-gaze.bandcamp.com/album/computer-afterlife">Computer Afterlife by Infinity Frequencies</a></iframe>
 angular.module('vpApp')
   .filter('bandcampEmbed', function ($sce) {
-    return function(bcid) {
-      return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + bcid + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
+    return function(id) {
+      return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + encodeURIComponent(id) + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
     };
-  });
+  })
+  .filter('soundcloudPlaylistEmbed', function($sce) {
+    return function(id) {
+      return $sce.trustAsResourceUrl('https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
+    };
+  })
+  .filter('soundcloudTrackEmbed', function($sce) {
+    return function(id) {
+      return $sce.trustAsResourceUrl('https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
+    };
+  })
+  .filter('youtubeVideoEmbed', function($sce) {
+    return function(id) {
+      return $sce.trustAsResourceUrl('http://www.youtube.com/embed/' + encodeURIComponent(id));
+    };
+  });;
 
 vpApp.controller('MainController', function($scope, $http, $q) {
   

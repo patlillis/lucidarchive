@@ -20,6 +20,7 @@ navbar {
 
 table {
   text-transform: none;
+  table-layout: fixed;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -106,8 +107,9 @@ h6 { font-size: 120%; line-height: 1.6;  letter-spacing: 0; }
   float: left;
 }
 
-.artDetail {
+img {
   width: 100%;
+  max-width: 700px;
 }
 
 /* animations */
