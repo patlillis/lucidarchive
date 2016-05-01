@@ -2,10 +2,32 @@ var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V
 
 var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
 
+vpApp.directive("keepScrollPos", function($route, $window, $timeout, $location, $anchorScroll) {
+  // cache scroll position of each route's templateUrl
+  var scrollPosCache = {};
 
-//<iframe style="border: 0; width: 100%; height: 472px;" src="https://bandcamp.com/EmbeddedPlayer/album=4192345025/size=large/bgcol=ffffff/linkcol=0687f5/artwork=none/transparent=true/" seamless><a href="http://computer-gaze.bandcamp.com/album/computer-afterlife">Computer Afterlife by Infinity Frequencies</a></iframe>
-angular.module('vpApp')
-  .filter('bandcampEmbed', function ($sce) {
+  // compile function
+  return function(scope, element, attrs) {
+    scope.$on('$routeChangeStart', function() {
+      if ($route.current) // store scroll position for the current view
+        scrollPosCache[$route.current.loadedTemplateUrl] = [$window.pageXOffset, $window.pageYOffset];
+    });
+
+    scope.$on('$routeChangeSuccess', function() {
+      // if hash is specified explicitly, it trumps previously stored scroll position
+      if ($location.hash())
+        $anchorScroll();
+      else { // else get previous scroll position; if none, scroll to the top of the page
+        var prevScrollPos = scrollPosCache[$route.current.loadedTemplateUrl] || [ 0, 0 ];
+        $timeout(function() {
+        $window.scrollTo(prevScrollPos[0], prevScrollPos[1]);
+        }, 0);
+      }
+    });
+  };
+});
+
+vpApp.filter('bandcampEmbed', function ($sce) {
     return function(id) {
       return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + encodeURIComponent(id) + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
     };
@@ -35,15 +57,7 @@ angular.module('vpApp')
   })
   .filter('decodeURI', function() {
     return window.decodeURI;
-  });/*
-  .filter('truncate', function($sce) {
-    return function(text, length) {
-      if (isNaN(length)) return text;
-      if (text.length > length)
-        return text.substr(0, length - 1) + '…';
-      return text;
-    };
-  });//*/
+  });
 
 vpApp.controller('MainController', function($scope, $http, $q) {
   
@@ -99,6 +113,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
 });
 
 vpApp.controller('ListController', function($scope) {
+  
   $scope.sortField = 'Date';
   
   $scope.sorter = function(val) {
@@ -121,7 +136,7 @@ vpApp.controller('DetailController', function($scope, $filter, $routeParams) {
 
 vpApp.config(function($routeProvider) {
   $routeProvider.when('/', {
-    templateUrl: 'partials/home.html',
+    templateUrl: 'partials/list.html',
     controller: 'ListController'
   }).
   when('/a/:uid', {
