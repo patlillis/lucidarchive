@@ -1,6 +1,6 @@
 var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
 
-var vpApp = angular.module('vpApp', ['ngRoute']);
+var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
 
 
 //<iframe style="border: 0; width: 100%; height: 472px;" src="https://bandcamp.com/EmbeddedPlayer/album=4192345025/size=large/bgcol=ffffff/linkcol=0687f5/artwork=none/transparent=true/" seamless><a href="http://computer-gaze.bandcamp.com/album/computer-afterlife">Computer Afterlife by Infinity Frequencies</a></iframe>

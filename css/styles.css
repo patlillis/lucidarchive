@@ -106,6 +106,22 @@ h6 { font-size: 120%; line-height: 1.6;  letter-spacing: 0; }
   float: left;
 }
 
+.artDetail {
+  width: 100%;
+}
+
+/* animations */
+
+.fade {
+  transition: all linear 200ms;
+}
+
+.fade.ng-hide {
+  opacity: 0;
+}
+
+/* obnoxious responsive conditionals */
+
 @media (min-width: 500px) {
   .album {
     width: 20%;

@@ -30,6 +30,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular-route.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.4/angular-animate.min.js"></script>
   <script src="script.js"></script>
 
   <!-- corporate branding
@@ -40,7 +41,7 @@
 
 </head>
 <body ng-controller="MainController">
-  <div ng-hide="db" class="loading"></div>
+  <div ng-hide="db" class="loading fade"></div>
   <div ng-view></div>
 </body>
 </html>
