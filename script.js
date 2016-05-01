@@ -30,6 +30,9 @@ angular.module('vpApp')
       return $sce.trustAsResourceUrl('https://open.spotify.com/embed?uri=' + encodeURIComponent(url));
     }
   })
+  .filter('trustAsResourceUrl', function($sce) {
+    return $sce.trustAsResourceUrl;
+  })
   .filter('decodeURI', function() {
     return window.decodeURI;
   });/*
