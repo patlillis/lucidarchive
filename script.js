@@ -27,7 +27,7 @@ vpApp.directive("keepScrollPos", function($route, $window, $timeout, $location, 
   };
 });
 
-vpApp.filter('bandcampEmbed', function ($sce) {
+vpApp.filter('bandcampEmbed', function($sce) {
     return function(id) {
       return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + encodeURIComponent(id) + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
     };
@@ -112,8 +112,9 @@ vpApp.controller('MainController', function($scope, $http, $q) {
   });
 });
 
-vpApp.controller('ListController', function($scope) {
+vpApp.controller('ListController', function($scope, $routeParams) {
   
+  $scope.query = $routeParams.q;
   $scope.sortField = 'Date';
   
   $scope.sorter = function(val) {
@@ -138,12 +139,13 @@ vpApp.config(function($routeProvider) {
   $routeProvider.when('/', {
     templateUrl: 'partials/list.html',
     controller: 'ListController'
-  }).
-  when('/a/:uid', {
+  }).when('/q/:q', {
+    templateUrl: 'partials/list.html',
+    controller: 'ListController'
+  }).when('/a/:uid', {
     templateUrl: 'partials/detail.html',
     controller: 'DetailController'
-  }).
-  otherwise({
+  }).otherwise({
     redirectTo: '/'
   });
 });
