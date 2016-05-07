@@ -74,7 +74,7 @@ h4 { font-size: 150%; line-height: 1.6;  letter-spacing: 0; }
   padding: 0px
 }
 
-.album > div {
+.tile > div {
   position: absolute;
   top: 0;
   left: 0;
@@ -88,20 +88,25 @@ h4 { font-size: 150%; line-height: 1.6;  letter-spacing: 0; }
   background-position: center;
 }
 
-.album > div:hover {
+.tile > div:hover {
   border: 1px solid #FFF;
   margin: -0.5px;
 }
 
 /* cover sizing */
 
-.album {
+.tile {
   position: relative;
   
   width: 25%;
   max-width: 25%;
   padding-bottom: 25%;
   float: left;
+}
+
+.label {
+  padding-top: 20px;
+  clear: both;
 }
 
 /* detail */
@@ -147,21 +152,21 @@ img {
 /* obnoxious responsive conditionals */
 
 @media (min-width: 500px) {
-  .album {
+  .tile {
     width: 20%;
     padding-bottom: 20%;
   }
 }
 
 @media (min-width: 660px) {
-  .album {
+  .tile {
     width: 16.666666666%;
     padding-bottom: 16.666666666%;
   }
 }
 
 @media (min-width: 820px) {
-  .album {
+  .tile {
     width: 14.285714285%;
     padding-bottom: 14.285714285%;
   }
@@ -169,7 +174,7 @@ img {
 }
 
 @media (min-width: 980px) {
-  .album {
+  .tile {
     width: 12.5%;
     padding-bottom: 12.5%;
   }
@@ -177,7 +182,7 @@ img {
 }
 
 @media (min-width: 1140px) {
-  .album {
+  .tile {
     width: 11.1111111111%;
     padding-bottom: 11.1111111111%;
   }
@@ -185,7 +190,7 @@ img {
 }
 
 @media (min-width: 1300px) {
-  .album {
+  .tile {
     width: 10%;
     padding-bottom: 10%;
   }
@@ -193,7 +198,7 @@ img {
 }
 
 @media (min-width: 1460px) {
-  .album {
+  .tile {
     width: 9.0909090909%;
     padding-bottom: 9.0909090909%;
   }
@@ -201,7 +206,7 @@ img {
 }
 
 @media (min-width: 1620px) {
-  .album {
+  .tile {
     width: 8.33333333333%;
     padding-bottom: 8.33333333333%;
   }

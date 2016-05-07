@@ -116,6 +116,7 @@ vpApp.controller('ListController', function($scope, $routeParams) {
   
   $scope.query = $routeParams.q;
   $scope.sortField = 'Date';
+  $scope.sortReverse = true;
   
   $scope.sorter = function(val) {
     return val[$scope.sortField];
