@@ -21,7 +21,8 @@
 <div style="min-height: 300px;">
   <div class="container">
     <div class="gallery">
-      <a ng-repeat="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField)" ng-href="#/a/{{album.UID}}" title="{{album.Pseudonym}} - {{album.Title}}">
+      <div ng-repeat-start="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField)" ng-if="filtered[$index][sortField] != filtered[$index - 1][sortField]" ng-bind="filtered[$index][sortField]" style="clear: both;"></div>
+      <a ng-repeat-end ng-href="#/a/{{album.UID}}" title="{{album.Pseudonym}} - {{album.Title}}">
         <div class="album">
           <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}"></div>
         </div>
