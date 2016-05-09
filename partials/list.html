@@ -21,7 +21,7 @@
 <div style="min-height: 300px;">
   <div class="container">
     <div class="gallery">
-      <div class="label" ng-repeat-start="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField)" ng-if="(sortField.toLowerCase().indexOf('genre') >= 0) && filtered[$index][sortField] != filtered[$index - 1][sortField]">
+      <div class="label" ng-repeat-start="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField)" ng-if="(sortField === 'Genre' || sortField === 'Subgenre') && filtered[$index][sortField] != filtered[$index - 1][sortField]">
         <h4 ng-bind="filtered[$index][sortField]"></h4>
       </div>
       <div class="label" ng-if="sortField.indexOf('Date') >= 0 && filtered[$index][sortField].substr(0, 4) != filtered[$index - 1][sortField].substr(0, 4)">
@@ -29,7 +29,13 @@
       </div>
       <a ng-repeat-end ng-href="#/a/{{album.UID}}" title="{{album.Pseudonym}} - {{album.Title}}">
         <div class="tile">
-          <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}"></div>
+          <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}">
+            <div>
+              <h6 ng-bind="album.Date"></h6>
+              <h5 ng-bind="album.Title"></h5>
+              <h6 ng-bind="album.Pseudonym"></h6>
+            </div>
+          </div>
         </div>
       </a>
       <h4 ng-if="!filtered.length">no results</h4>
