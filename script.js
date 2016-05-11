@@ -100,6 +100,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     $scope.guideUrls = tableInput[0].slice(start, end).map(function(a) {
       return a.split('"')[1];
     });
+    $scope.sortFields = head.slice(end);
     
     //db scope
 
@@ -128,8 +129,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
 
       db.push(dbRow);
     }
-
-    $scope.sortFields = head;
+    
     $scope.db = db;
   });
 });
