@@ -1,0 +1,28 @@
+<nav class="scaling">
+  <div class="container">
+    <h1>virtualplaza.xyz</h1>
+    <h2>interactive guides</h2>
+    <h2><a target="_blank" ng-href="{{ guideUrl }}" ng-bind="guide"></a></h2>
+  </div>
+</nav>
+<div class="controls">
+  <div class="container">
+    <h4><a href="#/">back</a></h4>
+  </div>
+</div>
+<div class="container">
+  <table class="u-full-width" style="border: 1px solid #FFF;">
+    <thead>
+      <th style="width: 1.2em;"></th>
+      <th ng-repeat="x in cols" ng-bind="x + 1"></th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="y in rows">
+        <th style="padding-right: 0.2em;" ng-bind="y + 1 | char"></th>
+        <td ng-repeat="x in cols" ng-style="(album = albums[y][x]) ? '' : { 'background-color': '#222' }">
+          <div ng-include="'albumTemplate'"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

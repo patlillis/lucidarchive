@@ -1,9 +1,9 @@
-<navbar>
+<nav class="scaling">
   <div class="container">
     <h1>virtualplaza.xyz</h1>
     <h2>enjoy your stay and come again</h2>
   </div>
-</navbar>
+</nav>
 <div class="controls">
   <div class="container">
     <span>
@@ -27,17 +27,7 @@
       <div class="label" ng-if="sortField.indexOf('Date') >= 0 && filtered[$index][sortField].substr(0, 4) != filtered[$index - 1][sortField].substr(0, 4)">
         <h4 ng-bind="filtered[$index][sortField].substr(0, 4)"></h4>
       </div>
-      <a ng-repeat-end ng-href="#/a/{{album.UID}}" title="{{album.Pseudonym}} - {{album.Title}}">
-        <div class="tile">
-          <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}">
-            <div>
-              <h6 ng-bind="album.Date"></h6>
-              <h5 ng-bind="album.Title"></h5>
-              <h6 ng-bind="album.Pseudonym"></h6>
-            </div>
-          </div>
-        </div>
-      </a>
+      <div ng-repeat-end ng-include="'albumTemplate'"></div>
       <h4 ng-if="!filtered.length">no results</h4>
     </div>
   </div>

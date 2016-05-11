@@ -14,13 +14,18 @@ body {
   word-wrap: break-word;
 }
 
-navbar {
+nav.scaling {
   font-size: 46.875%;
 }
 
 table {
   text-transform: none;
   table-layout: fixed;
+}
+
+table th {
+  color: #000;
+  background-color: #FFF;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -193,7 +198,7 @@ img {
     width: 14.285714285%;
     padding-bottom: 14.285714285%;
   }
-  navbar { font-size: 54.6875%; }
+  nav.scaling { font-size: 54.6875%; }
 }
 
 @media (min-width: 980px) {
@@ -201,7 +206,7 @@ img {
     width: 12.5%;
     padding-bottom: 12.5%;
   }
-  navbar { font-size: 62.5%; }
+  nav.scaling { font-size: 62.5%; }
 }
 
 @media (min-width: 1140px) {
@@ -209,7 +214,7 @@ img {
     width: 11.1111111111%;
     padding-bottom: 11.1111111111%;
   }
-  navbar { font-size: 70.3125%; }
+  nav.scaling { font-size: 70.3125%; }
 }
 
 @media (min-width: 1300px) {
@@ -217,7 +222,7 @@ img {
     width: 10%;
     padding-bottom: 10%;
   }
-  navbar { font-size: 78.125%; }
+  nav.scaling { font-size: 78.125%; }
 }
 
 @media (min-width: 1460px) {
@@ -225,7 +230,7 @@ img {
     width: 9.0909090909%;
     padding-bottom: 9.0909090909%;
   }
-  navbar { font-size: 85.9375%; }
+  nav.scaling { font-size: 85.9375%; }
 }
 
 @media (min-width: 1620px) {
@@ -233,5 +238,11 @@ img {
     width: 8.33333333333%;
     padding-bottom: 8.33333333333%;
   }
-  navbar { font-size: 93.75%; }
+  nav.scaling { font-size: 93.75%; }
+}
+
+table .tile {
+  width: 100%;
+  max-width: 100%;
+  padding-bottom: 100%;
 }
