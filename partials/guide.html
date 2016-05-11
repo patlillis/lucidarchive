@@ -13,12 +13,12 @@
 <div class="container">
   <table class="u-full-width" style="border: 1px solid #FFF;">
     <thead>
-      <th style="width: 1.2em;"></th>
+      <th style="width: 1.3em;"></th>
       <th ng-repeat="x in cols" ng-bind="x + 1"></th>
     </thead>
     <tbody>
       <tr ng-repeat="y in rows">
-        <th style="padding-right: 0.2em;" ng-bind="y + 1 | char"></th>
+        <th style="padding-right: 0.3em;" ng-bind="y + 1 | char"></th>
         <td ng-repeat="x in cols" ng-style="(album = albums[y][x]) ? '' : { 'background-color': '#222' }">
           <div ng-include="'albumTemplate'"></div>
         </td>
