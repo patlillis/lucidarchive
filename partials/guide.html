@@ -38,7 +38,7 @@
         </td>
         <td ng-if="labeled" ng-style="{ 'font-size': (4.2 / width) + 'vw' }" style="background-color: #222;">
           <div ng-repeat="album in albums[y] track by $index" ng-if="album" style="margin: 0 0.5em 0 2em;">
-            <span class="monospace" ng-bind="album._xy" style="margin-left: -1.5em;"></span>: <span ng-bind="album.Title + ' - ' + album.Pseudonym"></span>
+            <span class="monospace" ng-bind="album._xy" style="margin-left: -1.5em;"></span>: <span ng-bind="album.Pseudonym + ' - ' + album.Title"></span>
           </div>
         </td>
       </tr>
