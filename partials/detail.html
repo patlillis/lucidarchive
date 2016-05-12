@@ -26,7 +26,7 @@
       <h3 ng-bind="album.Pseudonym"></h3>
     </div>
     <table class="u-full-width info">
-      <tr ng-repeat="(key, value) in album" ng-switch="key">
+      <tr ng-repeat="(key, value) in album" ng-if="!(key.charAt(0) === '_')" ng-switch="key">
         <td ng-bind="key"></td>
         <td ng-switch-when="Citations" class="citations">
           <ul>

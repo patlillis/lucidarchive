@@ -212,9 +212,9 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $loc
         if (x > width)
           width = x;
 
-        albums[i].xy = xy;
-        albums[i].y = y - 1;
-        albums[i].x = x - 1;
+        albums[i]._xy = xy;
+        albums[i]._y = y - 1;
+        albums[i]._x = x - 1;
       }
 
       //x and y 0-indexed
@@ -233,7 +233,7 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $loc
       for (var yi = 0; yi < height; yi++) {
         $scope.albums[yi] = [];
         for (var xi = 0; xi < width; xi++)
-          $scope.albums[yi][xi] = $filter('filter')(albums, { y: yi, x: xi }, true)[0]; // true -> exact match
+          $scope.albums[yi][xi] = $filter('filter')(albums, { _y: yi, _x: xi }, true)[0]; // true -> exact match
       }
       
       console.log($scope.albums[1]);
