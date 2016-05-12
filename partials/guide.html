@@ -2,25 +2,44 @@
   <div class="container">
     <h1>virtualplaza.xyz</h1>
     <h2>interactive guides</h2>
-    <h2><a target="_blank" ng-href="{{ guideUrl }}" ng-bind="guide"></a></h2>
   </div>
 </nav>
 <div class="controls">
   <div class="container">
-    <h4><a href="#/">back</a></h4>
+    <label>text:</label>
+    <input type="button" ng-value="{true: 'on', false: 'off'}[!!labeled]" ng-click="labeled = !labeled" />
+  </div>
+</div>
+<div class="scaling">
+  <div class="container" ng-if="albums" style="margin-bottom: 20px;">
+    <h2><a target="_blank" ng-href="{{ guideUrl }}" ng-bind="guide"></a></h2>
   </div>
 </div>
 <div class="container">
-  <table class="u-full-width" style="border: 1px solid #FFF;">
+  <div ng-if="!albums">
+    <h3>guides:</h3>
+    <ul>
+      <li ng-repeat="guide in guideFields" ng-if="!$first">
+        <h5><a ng-bind="guide" ng-href="#/g/{{ $index }}"></a></h4>
+      </li>
+    </ul>
+  </div>
+  <table ng-if="albums" class="u-full-width" style="border: 1px solid #FFF;">
     <thead>
       <th style="width: 1.3em;"></th>
       <th ng-repeat="x in cols" ng-bind="x + 1"></th>
+      <th ng-if="labeled" style="width: 20%;">text</th>
     </thead>
-    <tbody>
+    <tbody ng-style="{'font-size': ((10 - 2 * labeled) / width) + 'vw'}">
       <tr ng-repeat="y in rows">
-        <th style="padding-right: 0.3em;" ng-bind="y + 1 | char"></th>
+        <th style="padding-right: 0.3em; font-size: 1rem;" ng-bind="y + 1 | char"></th>
         <td ng-repeat="x in cols" ng-style="(album = albums[y][x]) ? '' : { 'background-color': '#222' }">
           <div ng-include="'albumTemplate'"></div>
+        </td>
+        <td ng-if="labeled" ng-style="{ 'font-size': (4.2 / width) + 'vw' }" style="background-color: #222;">
+          <div ng-repeat="album in albums[y] track by $index" ng-if="album" style="margin: 0 0.5em 0 2em;">
+            <span class="monospace" ng-bind="album.xy" style="margin-left: -1.5em;"></span>: <span ng-bind="album.Title + ' - ' + album.Pseudonym"></span>
+          </div>
         </td>
       </tr>
     </tbody>

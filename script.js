@@ -1,4 +1,5 @@
 var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
+var unlabeledSuffix = ' (unlabeled)';
 
 var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
 
@@ -100,7 +101,15 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     $scope.guideUrls = tableInput[0].slice(start, end).map(function(a) {
       return a.split('"')[1];
     });
-    $scope.sortFields = head.slice(end);
+    
+    var sortFields = head.slice(end);
+    var unlabeledFields = ['Date', 'Genre', 'Subgenre'];
+    for (var i = 0; i < unlabeledFields.length; i++) {
+      var j = sortFields.indexOf(unlabeledFields[i]);
+      if (j >= 0)
+        sortFields.splice(j + 1, 0, unlabeledFields[i] + unlabeledSuffix);
+    }
+    $scope.sortFields = sortFields;
     
     //db scope
 
@@ -141,11 +150,13 @@ vpApp.controller('ListController', function($scope, $routeParams) {
   $scope.sortReverse = true;
   
   $scope.sorter = function(val) {
-    return val[$scope.sortField];
+    var field = $scope.sortField.replace(unlabeledSuffix, '');
+    return val[field];
   };
   
   $scope.hasSortField = function(val) {
-    return !!val[$scope.sortField];
+    var field = $scope.sortField.replace(unlabeledSuffix, '');
+    return !!val[field];
   };
 });
 
@@ -158,63 +169,76 @@ vpApp.controller('DetailController', function($scope, $filter, $routeParams) {
   });
 });
 
-vpApp.controller('GuideController', function($scope, $filter, $routeParams) {
+vpApp.controller('GuideController', function($scope, $filter, $routeParams, $location) {
   $scope.$parent.dbPromise.then(function() {
-    var guide = $scope.$parent.guideFields[$routeParams.gid];
-    $scope.guide = guide;
-    $scope.guideUrl = $scope.$parent.guideUrls[$routeParams.gid];
-    
-    var filter = {};
-    filter[guide] = '!!';
-    var albums = $filter('filter')($scope.$parent.db, filter);
-    
-    var height = 0;
-    var width = 0;
-    for (var i = 0; i < albums.length; i++) {
-      
-      //note: x and y are 1-indexed
-      
-      var xy = albums[i][guide];
-      xy = xy.trim().split(/\s+/g);
-      xy = xy[xy.length - 1];
-      
-      var y = xy.match(/\d+|[A-Z]+/)[0];
-      var x = xy.substr(y.length);
-      
-      if (isNaN(y))
-        y = y.charCodeAt(0) - 0x40;
-      if (isNaN(x))
-        x = x.charCodeAt(0) - 0x40;
-      
-      y = parseInt(y, 10);
-      x = parseInt(x, 10);
-      
-      if (y > height)
-        height = y;
-      if (x > width)
-        width = x;
-      
-      albums[i].y = y - 1;
-      albums[i].x = x - 1;
+    // invalid guide
+    if (!$routeParams.gid || $routeParams.gid >= $scope.$parent.guideFields.length || $routeParams.gid < 1) {
+      $scope.albums = false;
     }
+    //valid guide
+    else {
     
-    //x and y 0-indexed
-    
-    $scope.height = height;
-    $scope.rows = [];
-    for (var i = 0; i < height; i++)
-      $scope.rows[i] = i;
-    
-    $scope.width = width;
-    $scope.cols = [];
-    for (var i = 0; i < width; i++)
-      $scope.cols[i] = i;
-    
-    $scope.albums = [];
-    for (var yi = 0; yi < height; yi++) {
-      $scope.albums[yi] = [];
-      for (var xi = 0; xi < width; xi++)
-        $scope.albums[yi][xi] = $filter('filter')(albums, { y: yi, x: xi }, true)[0]; // true -> exact match
+      var guide = $scope.$parent.guideFields[$routeParams.gid];
+      $scope.guide = guide;
+      $scope.guideUrl = $scope.$parent.guideUrls[$routeParams.gid];
+
+      var filter = {};
+      filter[guide] = '!!';
+      var albums = $filter('filter')($scope.$parent.db, filter);
+
+      var height = 0;
+      var width = 0;
+      for (var i = 0; i < albums.length; i++) {
+
+        //note: x and y are 1-indexed
+
+        var xy = albums[i][guide];
+        xy = xy.trim().split(/\s+/g);
+        xy = xy[xy.length - 1];
+
+        var y = xy.match(/\d+|[A-Z]+/)[0];
+        var x = xy.substr(y.length);
+
+        if (isNaN(y))
+          y = y.charCodeAt(0) - 0x40;
+        if (isNaN(x))
+          x = x.charCodeAt(0) - 0x40;
+
+        y = parseInt(y, 10);
+        x = parseInt(x, 10);
+
+        if (y > height)
+          height = y;
+        if (x > width)
+          width = x;
+
+        albums[i].xy = xy;
+        albums[i].y = y - 1;
+        albums[i].x = x - 1;
+      }
+
+      //x and y 0-indexed
+
+      $scope.height = height;
+      $scope.rows = [];
+      for (var i = 0; i < height; i++)
+        $scope.rows[i] = i;
+
+      $scope.width = width;
+      $scope.cols = [];
+      for (var i = 0; i < width; i++)
+        $scope.cols[i] = i;
+
+      $scope.albums = [];
+      for (var yi = 0; yi < height; yi++) {
+        $scope.albums[yi] = [];
+        for (var xi = 0; xi < width; xi++)
+          $scope.albums[yi][xi] = $filter('filter')(albums, { y: yi, x: xi }, true)[0]; // true -> exact match
+      }
+      
+      console.log($scope.albums[1]);
+      
+      $scope.labeled = false;
     }
   });
 });
@@ -223,13 +247,16 @@ vpApp.config(function($routeProvider) {
   $routeProvider.when('/', {
     templateUrl: 'partials/list.html',
     controller: 'ListController'
+  }).when('/a/', {
+    templateUrl: 'partials/list.html',
+    controller: 'ListController'
   }).when('/q/:q', {
     templateUrl: 'partials/list.html',
     controller: 'ListController'
   }).when('/a/:uid', {
     templateUrl: 'partials/detail.html',
     controller: 'DetailController'
-  }).when('/g/:gid', {
+  }).when('/g/:gid?', {
     templateUrl: 'partials/guide.html',
     controller: 'GuideController'
   }).otherwise({
