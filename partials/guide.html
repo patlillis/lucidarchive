@@ -33,11 +33,14 @@
     <tbody ng-style="{'font-size': ((10 - 2 * labeled) / width) + 'vw'}">
       <tr ng-repeat="y in rows">
         <th style="padding-right: 0.3em; font-size: 1rem;" ng-bind="y + 1 | char"></th>
-        <td ng-repeat="x in cols" ng-style="(album = albums[y][x]) ? '' : { 'background-color': '#222' }">
-          <div ng-include="'albumTemplate'"></div>
+        <td ng-repeat="x in cols" ng-style="(album = albums[y - minY][x - minX]) ? '' : { 'background-color': '#222' }">
+          <div ng-if="album.Text" style="margin: 1em 0.5em;">
+            <h5 ng-bind="album.Text"></h5>
+          </div>
+          <div ng-if="!album.Text" ng-include="'albumTemplate'"></div>
         </td>
-        <td ng-if="labeled" ng-style="{ 'font-size': (4.2 / width) + 'vw' }" style="background-color: #222;">
-          <div ng-repeat="album in albums[y] track by $index" ng-if="album" style="margin: 0 0.5em 0 2em;">
+        <td ng-if="labeled" ng-style="{ 'font-size': (4.5 / width) + 'vw' }" style="background-color: #222;">
+          <div ng-repeat="album in albums[y - minY] track by $index" ng-if="album && !album.Text" style="margin: 0 0.5em 0 2em;">
             <span class="monospace" ng-bind="album._xy" style="margin-left: -1.5em;"></span>: <span ng-bind="album.Pseudonym + ' - ' + album.Title"></span>
           </div>
         </td>

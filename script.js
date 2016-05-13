@@ -1,4 +1,5 @@
 var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
+var dbGuideText = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/2/public/full?alt=json";
 var unlabeledSuffix = ' (unlabeled)';
 
 var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
@@ -102,6 +103,7 @@ vpApp.controller('MainController', function($scope, $http, $q) {
       return a.split('"')[1];
     });
     
+    //unlabeled fields
     var sortFields = head.slice(end);
     var unlabeledFields = ['Date', 'Genre', 'Subgenre'];
     for (var i = 0; i < unlabeledFields.length; i++) {
@@ -112,7 +114,6 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     $scope.sortFields = sortFields;
     
     //db scope
-
     for (r = 1; r < table.length; r++) {
       if (!table[r])
         continue;
@@ -124,7 +125,6 @@ vpApp.controller('MainController', function($scope, $http, $q) {
         if (!tableInput[r][c])
           continue;
         
-        var val;
         if ('Art' === head[c]) {
           var arr = tableInput[r][c].split('"');
           dbRow[head[c]] = arr[1];
@@ -169,9 +169,56 @@ vpApp.controller('DetailController', function($scope, $filter, $routeParams) {
   });
 });
 
-vpApp.controller('GuideController', function($scope, $filter, $routeParams, $location) {
-  $scope.$parent.dbPromise.then(function() {
+vpApp.controller('GuideController', function($scope, $filter, $routeParams, $http, $q) {
+  var dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
+    //get guide text labels
+    var cells = res.data.feed.entry;
+    var table = [];
+    var r, c;
+
+    for (var i = 0; i < cells.length; i++) {
+      var cell = cells[i];
+      r = cell.gs$cell.row - 1;
+      c = cell.gs$cell.col - 1;
+
+      if (!table[r])
+        table[r] = [];
+
+      table[r][c] = cell.content.$t;
+    }
+    
+    //normalize
+    var db = [];
+    var head = table[0];
+    var guides = [];
+    
+    //db
+    for (r = 1; r < table.length; r++) {
+      if (!table[r])
+        continue;
+      
+      var dbRow = {};
+      
+      for (c = 0; c < head.length - 1; c++) {
+        
+        if (!table[r][c])
+          continue;
+        
+        dbRow[head[c]] = table[r][c];
+      }
+      dbRow[head[head.length - 1]] = table[r].slice(c);
+
+      db.push(dbRow);
+    }
+    
+    $scope.dbGuideText = db;
+    
+  });
+  
+  $q.all([$scope.$parent.dbPromise, dbGuideTextPromise]).then(function() {
+    //do stuff with them
     // invalid guide
+    
     if (!$routeParams.gid || $routeParams.gid >= $scope.$parent.guideFields.length || $routeParams.gid < 1) {
       $scope.albums = false;
     }
@@ -185,18 +232,24 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $loc
       var filter = {};
       filter[guide] = '!!';
       var albums = $filter('filter')($scope.$parent.db, filter);
+      var texts = $filter('filter')($scope.dbGuideText, filter);
+      var albumsAndText = albums.concat(texts);
 
-      var height = 0;
-      var width = 0;
-      for (var i = 0; i < albums.length; i++) {
+      // all inclusive
+      var maxY = 0;
+      var maxX = 0;
+      var minY = 0;
+      var minX = 0;
+      
+      for (var i = 0; i < albumsAndText.length; i++) {
 
-        //note: x and y are 1-indexed
+        //note: read values are 1-indexed
 
-        var xy = albums[i][guide];
+        var xy = albumsAndText[i][guide];
         xy = xy.trim().split(/\s+/g);
         xy = xy[xy.length - 1];
 
-        var y = xy.match(/\d+|[A-Z]+/)[0];
+        var y = xy.match(/\d+|[@A-Z]+/)[0];
         var x = xy.substr(y.length);
 
         if (isNaN(y))
@@ -204,39 +257,47 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $loc
         if (isNaN(x))
           x = x.charCodeAt(0) - 0x40;
 
-        y = parseInt(y, 10);
-        x = parseInt(x, 10);
+        y = parseInt(y, 10) - 1;
+        x = parseInt(x, 10) - 1;
 
-        if (y > height)
-          height = y;
-        if (x > width)
-          width = x;
+        if (y > maxY)
+          maxY = y;
+        else if (y < minY)
+          minY = y;
+        
+        if (x > maxX)
+          maxX = x;
+        else if (x < minX)
+          minX = x;
 
-        albums[i]._xy = xy;
-        albums[i]._y = y - 1;
-        albums[i]._x = x - 1;
+        albumsAndText[i]._xy = xy;
+        albumsAndText[i]._y = y;
+        albumsAndText[i]._x = x;
       }
 
       //x and y 0-indexed
-
-      $scope.height = height;
+      $scope.minY = minY;
+      $scope.minX = minX;
+      
+      
+      $scope.height = maxY - minY + 1;
       $scope.rows = [];
-      for (var i = 0; i < height; i++)
-        $scope.rows[i] = i;
+      for (var i = 0; i < $scope.height; i++)
+        $scope.rows[i] = minY + i;
 
-      $scope.width = width;
+      $scope.width = maxX - minX + 1;
       $scope.cols = [];
-      for (var i = 0; i < width; i++)
-        $scope.cols[i] = i;
+      for (var i = 0; i < $scope.width; i++)
+        $scope.cols[i] = minX + i;
 
       $scope.albums = [];
-      for (var yi = 0; yi < height; yi++) {
+      for (var yi = 0; yi < $scope.height; yi++) {
         $scope.albums[yi] = [];
-        for (var xi = 0; xi < width; xi++)
-          $scope.albums[yi][xi] = $filter('filter')(albums, { _y: yi, _x: xi }, true)[0]; // true -> exact match
+        for (var xi = 0; xi < $scope.width; xi++)
+          $scope.albums[yi][xi] = $filter('filter')(albumsAndText, { _y: minY + yi, _x: minX + xi }, true)[0]; // true -> exact match
       }
       
-      console.log($scope.albums[1]);
+      //console.log($scope.albums[1]);
       
       $scope.labeled = false;
     }
