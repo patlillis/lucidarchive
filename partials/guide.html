@@ -33,7 +33,7 @@
     <tbody ng-style="{'font-size': ((10 - 2 * labeled) / width) + 'vw'}">
       <tr ng-repeat="y in rows">
         <th style="padding-right: 0.3em; font-size: 1rem;" ng-bind="y + 1 | char"></th>
-        <td ng-repeat="x in cols" ng-style="(album = albums[y - minY][x - minX]) ? '' : { 'background-color': '#222' }">
+        <td ng-repeat="x in cols" ng-style="(album = albums[y - minY][x - minX]) && !album.Text ? '' : { 'background-color': '#222' }">
           <div ng-if="album.Text" style="margin: 1em 0.5em;">
             <h5 ng-bind="album.Text"></h5>
           </div>

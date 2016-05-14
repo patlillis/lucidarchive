@@ -1,6 +1,7 @@
 var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
 var dbGuideText = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/2/public/full?alt=json";
 var unlabeledSuffix = ' (unlabeled)';
+var cacheId = 'vpxyzcache';
 
 var vpApp = angular.module('vpApp', ['ngRoute', 'ngAnimate']);
 
@@ -143,11 +144,21 @@ vpApp.controller('MainController', function($scope, $http, $q) {
   });
 });
 
-vpApp.controller('ListController', function($scope, $routeParams) {
+vpApp.controller('ListController', function($scope, $routeParams, $cacheFactory) {
   
-  $scope.query = $routeParams.q;
-  $scope.sortField = 'Date';
-  $scope.sortReverse = true;
+  var cache = $cacheFactory.get(cacheId) || $cacheFactory(cacheId);
+  
+  $scope.$on('$locationChangeStart', function(event) {
+    console.log('caching query parameters');
+    cache.put('query', $scope.query);
+    cache.put('sortField', $scope.sortField);
+    cache.put('sortReverse', $scope.sortReverse);
+  });
+  
+  $scope.query = $routeParams.q || cache.get('query') || '';
+  $scope.sortField = cache.get('sortField') || 'Date';
+  var sortReverse = cache.get('sortReverse');
+  $scope.sortReverse = (sortReverse === undefined ? true : sortReverse);
   
   $scope.sorter = function(val) {
     var field = $scope.sortField.replace(unlabeledSuffix, '');
