@@ -31,13 +31,13 @@
   <script type="text/javascript" src="script.js"></script>
   
   <script type="text/ng-template" id="albumTemplate">
-    <a ng-if="album" ng-href="#/a/{{album.UID}}" title="{{album.Pseudonym}} - {{album.Title}}">
+    <a ng-if="::album" ng-href="#/a/{{::album.UID}}" title="{{::album.Pseudonym}} - {{::album.Title}}">
       <div class="tile">
-        <div ng-style="{'background-image':'url(\'' + album.Thumbnail + '\')'}">
+        <div ng-style="::{'background-image':'url(\'' + (album.Thumbnail | noProtocol) + '\')'}">
           <div>
-            <h6 ng-bind="album.Date"></h6>
-            <h5 ng-bind="album.Title"></h5>
-            <h6 ng-bind="album.Pseudonym"></h6>
+            <h6 ng-bind="::album.Date"></h6>
+            <h5 ng-bind="::album.Title"></h5>
+            <h6 ng-bind="::album.Pseudonym"></h6>
           </div>
         </div>
       </div>

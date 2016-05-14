@@ -32,27 +32,27 @@ vpApp.directive("keepScrollPos", function($route, $window, $timeout, $location, 
 
 vpApp.filter('bandcampEmbed', function($sce) {
     return function(id) {
-      return $sce.trustAsResourceUrl('http://bandcamp.com/EmbeddedPlayer/album=' + encodeURIComponent(id) + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
+      return $sce.trustAsResourceUrl('//bandcamp.com/EmbeddedPlayer/album=' + encodeURIComponent(id) + '/size=large/bgcol=333333/linkcol=0f91ff/artwork=none/transparent=true/');
     };
   })
   .filter('soundcloudPlaylistEmbed', function($sce) {
     return function(id) {
-      return $sce.trustAsResourceUrl('https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
+      return $sce.trustAsResourceUrl('//w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
     };
   })
   .filter('soundcloudTrackEmbed', function($sce) {
     return function(id) {
-      return $sce.trustAsResourceUrl('https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
+      return $sce.trustAsResourceUrl('//w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + encodeURIComponent(id) + '&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_artwork=false');
     };
   })
   .filter('youtubeVideoEmbed', function($sce) {
     return function(id) {
-      return $sce.trustAsResourceUrl('http://www.youtube.com/embed/' + encodeURIComponent(id));
+      return $sce.trustAsResourceUrl('//www.youtube.com/embed/' + encodeURIComponent(id));
     };
   })
   .filter('spotifyEmbed', function($sce) {
     return function(url) {
-      return $sce.trustAsResourceUrl('https://open.spotify.com/embed?uri=' + encodeURIComponent(url));
+      return $sce.trustAsResourceUrl('//open.spotify.com/embed?uri=' + encodeURIComponent(url));
     }
   })
   .filter('trustAsResourceUrl', function($sce) {
@@ -62,8 +62,14 @@ vpApp.filter('bandcampEmbed', function($sce) {
     return window.decodeURI;
   })
   .filter('char',function(){
-    return function(input){
+    return function(input) {
       return String.fromCharCode(0x40 + parseInt(input,10));
+    };
+  }).filter('noProtocol',function(){
+    return function(input) {
+      if (typeof input === "string")
+        return input.replace(/^https?:/, '');
+      return input;
     };
   });
 
