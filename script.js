@@ -150,21 +150,23 @@ vpApp.controller('MainController', function($scope, $http, $q) {
   });
 });
 
-vpApp.controller('ListController', function($scope, $routeParams, $cacheFactory) {
+vpApp.controller('ListController', function($scope, $routeParams, $rootScope, $cacheFactory) {
   
+  $rootScope.title = '';
+  
+  //caching
   var cache = $cacheFactory.get(cacheId) || $cacheFactory(cacheId);
-  
   $scope.$on('$locationChangeStart', function(event) {
     console.log('caching query parameters');
     cache.put('query', $scope.query);
     cache.put('sortField', $scope.sortField);
     cache.put('sortReverse', $scope.sortReverse);
   });
-  
   $scope.query = $routeParams.q || cache.get('query') || '';
   $scope.sortField = cache.get('sortField') || 'Date';
   var sortReverse = cache.get('sortReverse');
-  $scope.sortReverse = (sortReverse === undefined ? true : sortReverse);
+  $scope.sortReverse = sortReverse === undefined ? true : sortReverse;
+  
   
   $scope.sorter = function(val) {
     var field = $scope.sortField.replace(unlabeledSuffix, '');
@@ -177,17 +179,50 @@ vpApp.controller('ListController', function($scope, $routeParams, $cacheFactory)
   };
 });
 
-vpApp.controller('DetailController', function($scope, $filter, $routeParams) {
+vpApp.controller('DetailController', function($scope, $filter, $routeParams, $rootScope) {
+  
   $scope.$parent.dbPromise.then(function() {
     var albums = $filter('filter')($scope.$parent.db, { UID: $routeParams.uid});
-    if (!albums)
+    if (!albums.length)
       return console.log('none found'); //do something
+    
     $scope.album = albums[0];
+    $rootScope.title = albums[0].Pseudonym + ' - ' + albums[0].Title;
   });
 });
 
-vpApp.controller('GuideController', function($scope, $filter, $routeParams, $http, $q) {
+vpApp.controller('GuideController', function($scope, $filter, $routeParams, $http, $q, $rootScope, $location, $cacheFactory) {
+  
+  $rootScope.title = 'guides';
+  
+  $scope.guideChanged = function(guide, guideFields) {
+    var i = guideFields.indexOf(guide);
+    if (i >= 0)
+      $location.path('/g/' + i);
+    else
+      console.log('unknown guide changed', guide);
+  };
+  
+  //caching
+  var cache = $cacheFactory.get(cacheId) || $cacheFactory(cacheId);
+  $scope.$on('$locationChangeStart', function(event) {
+    cache.put('labeled', $scope.labeled);
+  });
+  var labeled = cache.get('labeled');
+  $scope.labeled = labeled === undefined ? false : labeled;
+  
+  $scope.isValidGuide = true;
+  
+  $scope.$parent.dbPromise.then(function() {
+    //set flag if invalid guide
+    //note: guideFields[0] is UID, reserved for possible future use
+    if (!$routeParams.gid || $routeParams.gid >= $scope.$parent.guideFields.length || $routeParams.gid < 1) {
+      $scope.isValidGuide = false;
+    }
+  });
+  
   var dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
+    
     //get guide text labels
     var cells = res.data.feed.entry;
     var table = [];
@@ -233,102 +268,88 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $htt
   });
   
   $q.all([$scope.$parent.dbPromise, dbGuideTextPromise]).then(function() {
-    //do stuff with them
-    // invalid guide
+    if (!$scope.isValidGuide)
+      return;
     
-    if (!$routeParams.gid || $routeParams.gid >= $scope.$parent.guideFields.length || $routeParams.gid < 1) {
-      $scope.albums = false;
-    }
     //valid guide
-    else {
-    
-      var guide = $scope.$parent.guideFields[$routeParams.gid];
-      $scope.guide = guide;
-      $scope.guideUrl = $scope.$parent.guideUrls[$routeParams.gid];
+    var guide = $scope.$parent.guideFields[$routeParams.gid];
+    $scope.guide = guide;
+    $scope.guideUrl = $scope.$parent.guideUrls[$routeParams.gid];
 
-      var filter = {};
-      filter[guide] = '!!';
-      var albums = $filter('filter')($scope.$parent.db, filter);
-      var texts = $filter('filter')($scope.dbGuideText, filter);
-      var albumsAndText = albums.concat(texts);
+    $rootScope.title = guide;
 
-      // all inclusive
-      var maxY = 0;
-      var maxX = 0;
-      var minY = 0;
-      var minX = 0;
-      
-      for (var i = 0; i < albumsAndText.length; i++) {
+    var filter = {};
+    filter[guide] = '!!';
+    var albums = $filter('filter')($scope.$parent.db, filter);
+    var texts = $filter('filter')($scope.dbGuideText, filter);
+    var albumsAndText = albums.concat(texts);
 
-        //note: read values are 1-indexed
+    // all inclusive
+    var maxY = 0;
+    var maxX = 0;
+    var minY = 0;
+    var minX = 0;
 
-        var xy = albumsAndText[i][guide];
-        xy = xy.trim().split(/\s+/g);
-        xy = xy[xy.length - 1];
+    for (var i = 0; i < albumsAndText.length; i++) {
 
-        var y = xy.match(/\d+|[@A-Z]+/)[0];
-        var x = xy.substr(y.length);
+      //note: read values are 1-indexed
 
-        if (isNaN(y))
-          y = y.charCodeAt(0) - 0x40;
-        if (isNaN(x))
-          x = x.charCodeAt(0) - 0x40;
+      var xy = albumsAndText[i][guide];
+      xy = xy.trim().split(/\s+/g);
+      xy = xy[xy.length - 1];
 
-        y = parseInt(y, 10) - 1;
-        x = parseInt(x, 10) - 1;
+      var y = xy.match(/\d+|[@A-Z]+/)[0];
+      var x = xy.substr(y.length);
 
-        if (y > maxY)
-          maxY = y;
-        else if (y < minY)
-          minY = y;
-        
-        if (x > maxX)
-          maxX = x;
-        else if (x < minX)
-          minX = x;
+      if (isNaN(y))
+        y = y.charCodeAt(0) - 0x40;
+      if (isNaN(x))
+        x = x.charCodeAt(0) - 0x40;
 
-        albumsAndText[i]._xy = xy;
-        albumsAndText[i]._y = y;
-        albumsAndText[i]._x = x;
-      }
+      y = parseInt(y, 10) - 1;
+      x = parseInt(x, 10) - 1;
 
-      //x and y 0-indexed
-      $scope.minY = minY;
-      $scope.minX = minX;
-      
-      
-      $scope.height = maxY - minY + 1;
-      $scope.rows = [];
-      for (var i = 0; i < $scope.height; i++)
-        $scope.rows[i] = minY + i;
+      if (y > maxY)
+        maxY = y;
+      else if (y < minY)
+        minY = y;
 
-      $scope.width = maxX - minX + 1;
-      $scope.cols = [];
-      for (var i = 0; i < $scope.width; i++)
-        $scope.cols[i] = minX + i;
+      if (x > maxX)
+        maxX = x;
+      else if (x < minX)
+        minX = x;
 
-      $scope.albums = [];
-      for (var yi = 0; yi < $scope.height; yi++) {
-        $scope.albums[yi] = [];
-        for (var xi = 0; xi < $scope.width; xi++)
-          $scope.albums[yi][xi] = $filter('filter')(albumsAndText, { _y: minY + yi, _x: minX + xi }, true)[0]; // true -> exact match
-      }
-      
-      //console.log($scope.albums[1]);
-      
-      $scope.labeled = false;
+      albumsAndText[i]._xy = xy;
+      albumsAndText[i]._y = y;
+      albumsAndText[i]._x = x;
+    }
+
+    //x and y 0-indexed
+    $scope.minY = minY;
+    $scope.minX = minX;
+
+
+    $scope.height = maxY - minY + 1;
+    $scope.rows = [];
+    for (var i = 0; i < $scope.height; i++)
+      $scope.rows[i] = minY + i;
+
+    $scope.width = maxX - minX + 1;
+    $scope.cols = [];
+    for (var i = 0; i < $scope.width; i++)
+      $scope.cols[i] = minX + i;
+
+    $scope.albums = [];
+    for (var yi = 0; yi < $scope.height; yi++) {
+      $scope.albums[yi] = [];
+      for (var xi = 0; xi < $scope.width; xi++)
+        $scope.albums[yi][xi] = $filter('filter')(albumsAndText, { _y: minY + yi, _x: minX + xi }, true)[0]; // true -> exact match
     }
   });
 });
 
 vpApp.config(function($routeProvider) {
-  $routeProvider.when('/', {
-    templateUrl: 'partials/list.html',
-    controller: 'ListController'
-  }).when('/a/', {
-    templateUrl: 'partials/list.html',
-    controller: 'ListController'
-  }).when('/q/:q', {
+  $routeProvider.when('/a/', {
     templateUrl: 'partials/list.html',
     controller: 'ListController'
   }).when('/a/:uid', {
@@ -337,7 +358,9 @@ vpApp.config(function($routeProvider) {
   }).when('/g/:gid?', {
     templateUrl: 'partials/guide.html',
     controller: 'GuideController'
+  }).when('/about/', {
+    templateUrl: 'partials/about.html'
   }).otherwise({
-    redirectTo: '/'
+    redirectTo: '/a/'
   });
 });

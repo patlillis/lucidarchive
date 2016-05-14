@@ -1,7 +1,7 @@
 <nav class="scaling">
   <div class="container">
     <h1>virtualplaza.xyz</h1>
-    <h2>enjoy your stay and come again</h2>
+    <h2>complete collection</h2>
   </div>
 </nav>
 <div class="controls">
@@ -9,7 +9,7 @@
     <span>
       <label>sort:</label>
       <select ng-model="sortField" style="max-width: 20%; border-top-right-radius: 0; border-bottom-right-radius: 0;">
-        <option ng-repeat="field in sortFields" ng-if="field.charAt(0) !== '_'" value="{{field}}" ng-bind="field | uppercase"></option>
+        <option ng-repeat="field in sortFields" ng-if="field.charAt(0) !== '_'" value="{{ ::field }}" ng-bind="::field | uppercase"></option>
       </select><input type="button" ng-value="{true: '\u25BC', false: '\u25B2'}[!!sortReverse]" ng-click="sortReverse = !sortReverse" style="border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px;" />
     </span>
     <span class="u-pull-right">
@@ -18,17 +18,15 @@
     </span>
   </div>
 </div>
-<div style="min-height: 300px;">
-  <div class="container">
-    <div class="gallery">
-      <div class="label" ng-repeat-start="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField) track by album.UID" ng-if="(sortField === 'Genre' || sortField === 'Subgenre') && filtered[$index][sortField] != filtered[$index - 1][sortField]">
-        <h4 ng-bind="filtered[$index][sortField]"></h4>
-      </div>
-      <div class="label" ng-if="sortField.indexOf('Date') >= 0 && filtered[$index][sortField].substr(0, 4) != filtered[$index - 1][sortField].substr(0, 4)">
-        <h4 ng-bind="filtered[$index][sortField].substr(0, 4)"></h4>
-      </div>
-      <div ng-repeat-end ng-include="'albumTemplate'"></div>
-      <h4 ng-if="!filtered.length">no results</h4>
+<div class="container" style="min-height: 300px;">
+  <div class="gallery">
+    <div class="label" ng-repeat-start="album in filtered = (db | orderBy:sorter:sortReverse | filter:query | filter:hasSortField) track by album.UID" ng-if="(sortField === 'Genre' || sortField === 'Subgenre') && filtered[$index][sortField] != filtered[$index - 1][sortField]">
+      <h4 ng-bind="filtered[$index][sortField]"></h4>
     </div>
+    <div class="label" ng-if="sortField.indexOf('Date') >= 0 && filtered[$index][sortField].substr(0, 4) != filtered[$index - 1][sortField].substr(0, 4)">
+      <h4 ng-bind="filtered[$index][sortField].substr(0, 4)"></h4>
+    </div>
+    <div ng-repeat-end ng-include="'albumTemplate'"></div>
+    <h4 ng-if="!filtered.length">no results</h4>
   </div>
 </div>

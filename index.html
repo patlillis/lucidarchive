@@ -4,7 +4,7 @@
 <head>
   
   <meta charset="utf-8">
-  <title>virtualplaza.xyz</title>
+  <title ng-bind="(title ? title + ' | ' : '') + 'virtualplaza.xyz'">virtualplaza.xyz</title>
   <meta name="description" content="welcome to virtualplaza.xyz">
   <meta name="author" content="">
   
@@ -78,11 +78,14 @@
   <div ng-view keep-scroll-pos><!-- template view --></div>
   <div class="controls">
     <div class="container">
-      <a target="_blank" href="http://goo.gl/forms/1PHPRnL2FM">Submit</a>
+      <a target="_blank" href="http://goo.gl/forms/1PHPRnL2FM">submit</a>
       &bull;
-      <a href="mailto:capitalism@virtualplaza.xyz">Suggest</a>
+      <a href="mailto:capitalism@virtualplaza.xyz">contact</a>
       &bull;
-      <a target="_blank" href="https://docs.google.com/spreadsheets/d/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/pubhtml">Raw data</a>
+      <a target="_blank" href="https://docs.google.com/spreadsheets/d/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/pubhtml">raw data</a>
+      &bull;
+      <a href="#/about/">about</a>
+      <span class="u-pull-right">&bull; enjoy your stay and come again</span>
     </div>
   </div>
 </body>

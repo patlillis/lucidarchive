@@ -6,8 +6,16 @@
 </nav>
 <div class="controls">
   <div class="container">
-    <label>text:</label>
-    <input type="button" ng-value="{true: 'on', false: 'off'}[!!labeled]" ng-click="labeled = !labeled" />
+    <span>
+      <label>guide:</label>
+      <select ng-model="guide" style="max-width: 20%;" ng-change="guideChanged(guide, guideFields)">
+        <option ng-repeat="guideName in guideFields" ng-if="!$first" value="{{ ::guideName }}" ng-bind="::guideName | uppercase"></option>
+      </select>
+    </span>
+    <span class="u-pull-right">
+      <label>text:</label>
+      <input type="button" ng-value="{true: 'on', false: 'off'}[!!labeled]" ng-click="labeled = !labeled" />
+    </span>
   </div>
 </div>
 <div class="scaling">
@@ -15,14 +23,9 @@
     <h2><a target="_blank" ng-href="{{ guideUrl }}" ng-bind="guide"></a></h2>
   </div>
 </div>
-<div class="container">
-  <div ng-if="!albums">
-    <h3>guides:</h3>
-    <ul>
-      <li ng-repeat="guide in guideFields" ng-if="!$first">
-        <h5><a ng-bind="guide" ng-href="#/g/{{ $index }}"></a></h4>
-      </li>
-    </ul>
+<div class="container" style="min-height: 300px;">
+  <div ng-if="!albums && !isValidGuide">
+    <h3>select guide above</h3>
   </div>
   <table ng-if="albums" class="u-full-width" style="border: 1px solid #FFF;">
     <thead>

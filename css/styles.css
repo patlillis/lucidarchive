@@ -146,7 +146,7 @@ img {
   width: 100%;
 }
 
-.title {
+.title, p {
   text-transform: none;
 }
 
