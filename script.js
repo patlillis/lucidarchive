@@ -73,7 +73,11 @@ vpApp.filter('bandcampEmbed', function($sce) {
     };
   });
 
-vpApp.controller('MainController', function($scope, $http, $q) {
+vpApp.controller('MainController', function($scope, $http, $q, $window) {
+  
+  $scope.goBack = function() {
+    $window.history.back();
+  };
   
   $scope.dbPromise = $http.get(dbUrl).then(function(res) {
     //create table
@@ -148,6 +152,52 @@ vpApp.controller('MainController', function($scope, $http, $q) {
     
     $scope.db = db;
   });
+  
+  $scope.dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
+    
+    //get guide text labels
+    var cells = res.data.feed.entry;
+    var table = [];
+    var r, c;
+
+    for (var i = 0; i < cells.length; i++) {
+      var cell = cells[i];
+      r = cell.gs$cell.row - 1;
+      c = cell.gs$cell.col - 1;
+
+      if (!table[r])
+        table[r] = [];
+
+      table[r][c] = cell.content.$t;
+    }
+    
+    //normalize
+    var db = [];
+    var head = table[0];
+    var guides = [];
+    
+    //db
+    for (r = 1; r < table.length; r++) {
+      if (!table[r])
+        continue;
+      
+      var dbRow = {};
+      
+      for (c = 0; c < head.length - 1; c++) {
+        
+        if (!table[r][c])
+          continue;
+        
+        dbRow[head[c]] = table[r][c];
+      }
+      dbRow[head[head.length - 1]] = table[r].slice(c);
+
+      db.push(dbRow);
+    }
+    
+    $scope.dbGuideText = db;
+    
+  });
 });
 
 vpApp.controller('ListController', function($scope, $routeParams, $rootScope, $cacheFactory) {
@@ -221,53 +271,7 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $htt
     }
   });
   
-  var dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
-    
-    //get guide text labels
-    var cells = res.data.feed.entry;
-    var table = [];
-    var r, c;
-
-    for (var i = 0; i < cells.length; i++) {
-      var cell = cells[i];
-      r = cell.gs$cell.row - 1;
-      c = cell.gs$cell.col - 1;
-
-      if (!table[r])
-        table[r] = [];
-
-      table[r][c] = cell.content.$t;
-    }
-    
-    //normalize
-    var db = [];
-    var head = table[0];
-    var guides = [];
-    
-    //db
-    for (r = 1; r < table.length; r++) {
-      if (!table[r])
-        continue;
-      
-      var dbRow = {};
-      
-      for (c = 0; c < head.length - 1; c++) {
-        
-        if (!table[r][c])
-          continue;
-        
-        dbRow[head[c]] = table[r][c];
-      }
-      dbRow[head[head.length - 1]] = table[r].slice(c);
-
-      db.push(dbRow);
-    }
-    
-    $scope.dbGuideText = db;
-    
-  });
-  
-  $q.all([$scope.$parent.dbPromise, dbGuideTextPromise]).then(function() {
+  $q.all([$scope.$parent.dbPromise, $scope.$parent.dbGuideTextPromise]).then(function() {
     if (!$scope.isValidGuide)
       return;
     
