@@ -18,14 +18,16 @@
     </span>
   </div>
 </div>
-<div class="scaling">
-  <div class="container" ng-if="albums" style="margin-bottom: 20px;">
-    <h2><a target="_blank" ng-href="{{ guideUrl }}" ng-bind="guide"></a></h2>
+<div class="scaling" ng-if="albums">
+  <div class="container" style="margin-bottom: 20px;">
+    <h2 ng-bind="guide"></h2>
+    <h3><a target="_blank" ng-href="{{ guideUrl }}">original</a></h3>
   </div>
 </div>
 <div class="container" style="min-height: 300px;">
   <div ng-if="!albums && !isValidGuide">
-    <h3>select guide above</h3>
+    <h3>guides:</h3>
+    <h4 ng-repeat="guideName in guideFields track by $index" ng-if="!$first"><a ng-href="#/g/{{::$index}}" ng-bind="::guideName"></a></h4>
   </div>
   <table ng-if="albums" class="u-full-width" style="border: 1px solid #FFF;">
     <thead>
