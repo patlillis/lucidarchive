@@ -35,7 +35,7 @@ h1 { font-size: 1000%; line-height: 1.2;  letter-spacing: -.1rem; }
 h2 { font-size: 450%; line-height: 1.35; letter-spacing: -.08rem; }
 h3 { font-size: 250%; line-height: 1.5;  letter-spacing: -.05rem; }
 h4 { font-size: 150%; line-height: 1.6;  letter-spacing: 0; }
-h5 { font-size: 110%; line-height: 1.6;  letter-spacing: 0; }
+h5 { font-size: 110%; line-height: 1.4;  letter-spacing: 0; }
 h6 { font-size: 70%; line-height: 1.6;  letter-spacing: 0; }
 
 .monospace {
@@ -49,7 +49,7 @@ h6 { font-size: 70%; line-height: 1.6;  letter-spacing: 0; }
   bottom: 0;
   right: 0;
   z-index: 10;
-  background: #000 url(../images/favicon.png) no-repeat center;
+  background: #000 url(../images/logo_160.png) no-repeat center;
 }
 
 /*

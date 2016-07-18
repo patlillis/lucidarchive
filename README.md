@@ -1,2 +1,2 @@
-# virtualplaza.xyz
-http://virtualplaza.xyz
+# lucidarchive
+http://lucidarchive.com
