@@ -190,6 +190,11 @@ a:hover {
   opacity: 0;
 }
 
+/* about */
+.upcase {
+  text-transform: uppercase;
+}
+
 /* obnoxious responsive conditionals */
 
 @media (min-width: 500px) {
