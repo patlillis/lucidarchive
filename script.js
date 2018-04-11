@@ -50,6 +50,11 @@ vpApp.filter('bandcampEmbed', function($sce) {
       return $sce.trustAsResourceUrl('//www.youtube.com/embed/' + encodeURIComponent(id));
     };
   })
+  .filter('youtubePlaylistEmbed', function($sce) {
+    return function(id) {
+      return $sce.trustAsResourceUrl('//www.youtube.com/embed/?listType=playlist&list=' + encodeURIComponent(id));
+    };
+  })
   .filter('spotifyEmbed', function($sce) {
     return function(url) {
       return $sce.trustAsResourceUrl('//open.spotify.com/embed?uri=' + encodeURIComponent(url));
