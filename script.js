@@ -58,7 +58,7 @@ vpApp.filter('bandcampEmbed', function($sce) {
   .filter('spotifyEmbed', function($sce) {
     return function(url) {
       return $sce.trustAsResourceUrl('//open.spotify.com/embed?uri=' + encodeURIComponent(url));
-    }
+    };
   })
   .filter('trustAsResourceUrl', function($sce) {
     return $sce.trustAsResourceUrl;
@@ -70,7 +70,8 @@ vpApp.filter('bandcampEmbed', function($sce) {
     return function(input) {
       return String.fromCharCode(0x40 + parseInt(input,10));
     };
-  }).filter('noProtocol',function(){
+  })
+  .filter('noProtocol',function(){
     return function(input) {
       if (typeof input === "string")
         return input.replace(/^https?:/, '');
@@ -114,8 +115,12 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
     var start = head.indexOf('UID');
     var end = head.indexOf('Art');
     
-    $scope.guideFields = head.slice(start, end); // 0 is all albums
-    $scope.guideUrls = tableInput[0].slice(start, end).map(function(a) {
+    var guideCells = tableInput[0].slice(start, end);
+    var guideFilter = function(a, i) {
+      return 0 === guideCells[i].indexOf('=HYPERLINK(');
+    };
+    $scope.guideFields = head.slice(start, end).filter(guideFilter); // 0 is all albums
+    $scope.guideUrls = guideCells.filter(guideFilter).map(function(a) {
       return a.split('"')[1];
     });
     
@@ -246,7 +251,7 @@ vpApp.controller('DetailController', function($scope, $filter, $routeParams, $ro
   });
 });
 
-vpApp.controller('GuideController', function($scope, $filter, $routeParams, $http, $q, $rootScope, $location, $cacheFactory) {
+vpApp.controller('GuideController', function($scope, $filter, $routeParams, $q, $rootScope, $location, $cacheFactory) {
   
   $rootScope.title = 'guides';
   
@@ -292,6 +297,8 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $htt
     var albums = $filter('filter')($scope.$parent.db, filter);
     var texts = $filter('filter')($scope.dbGuideText, filter);
     var albumsAndText = albums.concat(texts);
+
+    $scope.useFullArt = albums.length <= 70;
 
     // all inclusive
     var maxY = 0;

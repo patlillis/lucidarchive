@@ -32,7 +32,7 @@
   <script type="text/ng-template" id="albumTemplate">
     <a ng-if="::album" ng-href="#/a/{{::album.UID}}" title="{{::album.Pseudonym}} - {{::album.Title}}">
       <div class="tile">
-        <div ng-style="::{'background-image':'url(\'' + (album.Thumbnail | noProtocol) + '\')'}">
+        <div ng-style="::{'background-image':'url(\'' + ((useFullArt ? album.Art : album.Thumbnail) | noProtocol) + '\')'}">
           <div>
             <h6 ng-bind="::album.Date"></h6>
             <h5 ng-bind="::album.Title"></h5>
