@@ -1,5 +1,7 @@
-var dbUrl = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/1/public/full?alt=json";
-var dbGuideText = "https://spreadsheets.google.com/feeds/cells/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/2/public/full?alt=json";
+var dbUrl =       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTc5uxD_o4YKNhHrHmMucQOJQ8YekoMFsjFpuV54JBSJT0SKLL0Qww3O6sTCjG9BOxP-LWFMry9fDkO/pub?output=csv&gid=0";
+var dbGuideText = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTc5uxD_o4YKNhHrHmMucQOJQ8YekoMFsjFpuV54JBSJT0SKLL0Qww3O6sTCjG9BOxP-LWFMry9fDkO/pub?output=csv&gid=265214971";
+// https://docs.google.com/spreadsheets/d/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/export?id=1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0&format=csv&gid=0
+
 var unlabeledSuffix = ' (unlabeled)';
 var cacheId = 'vpxyzcache';
 
@@ -80,36 +82,56 @@ vpApp.filter('bandcampEmbed', function($sce) {
   });
 
 vpApp.controller('MainController', function($scope, $http, $q, $window) {
+  function parseCsv(csvText) {
+    var CELL_REGEX = /([,\r\n]|^)("((?:[^"]|"")+)"|[^,\r\n]*)/g;
+
+    var grid = [];
+    var row = null;
+
+    var match;
+    while ((match = CELL_REGEX.exec(csvText))) {
+      var sep = match[1];
+      var val = match[3] ? match[3].replace(/""/g, '"') : match[2];
+
+      // Handle newlines (new rows).
+      if (',' !== sep) grid.push((row = []));
+
+      row.push(val);
+    }
+    return grid;
+  }
 
   $scope.goBack = function() {
     $window.history.back();
   };
 
   $scope.dbPromise = $http.get(dbUrl).then(function(res) {
-    //create table
-    var cells = res.data.feed.entry;
-    var table = [];
-    var tableInput = [];
-    var r, c;
+    var table = parseCsv(res.data);
+    var tableInput = table;
 
-    for (var i = 0; i < cells.length; i++) {
-      var cell = cells[i];
-      r = cell.gs$cell.row - 1;
-      c = cell.gs$cell.col - 1;
+    // //create table
+    // var cells = res.data.feed.entry;
+    // var table = [];
+    // var tableInput = [];
+    // var r, c;
 
-      if (!table[r]) {
-        table[r] = [];
-        tableInput[r] = [];
-      }
+    // for (var i = 0; i < cells.length; i++) {
+    //   var cell = cells[i];
+    //   r = cell.gs$cell.row - 1;
+    //   c = cell.gs$cell.col - 1;
 
-      table[r][c] = cell.content.$t;
-      tableInput[r][c] = cell.gs$cell.inputValue;
-    }
+    //   if (!table[r]) {
+    //     table[r] = [];
+    //     tableInput[r] = [];
+    //   }
+
+    //   table[r][c] = cell.content.$t;
+    //   tableInput[r][c] = cell.gs$cell.inputValue;
+    // }
 
     //normalize
     var db = [];
     var head = table[0];
-    var guides = [];
 
     //guide scope
     var start = head.indexOf('UID');
@@ -146,10 +168,11 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
         if (!tableInput[r][c])
           continue;
 
-        if ('Art' === head[c]) {
-          var arr = tableInput[r][c].split('"');
-          dbRow[head[c]] = arr[1];
-          dbRow.Thumbnail = arr[3] || arr[1];
+        if ('Art URL' === head[c]) {
+          dbRow.Thumbnail = table[r][c];
+          // var arr = tableInput[r][c].split('"');
+          // dbRow[head[c]] = arr[1];
+          // dbRow.Thumbnail = arr[3] || arr[1];
         }
         else {
           dbRow[head[c]] = table[r][c];
@@ -164,27 +187,27 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
   });
 
   $scope.dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
+    var table = parseCsv(res.data);
 
-    //get guide text labels
-    var cells = res.data.feed.entry;
-    var table = [];
-    var r, c;
+    // //get guide text labels
+    // var cells = res.data.feed.entry;
+    // var table = [];
+    // var r, c;
 
-    for (var i = 0; i < cells.length; i++) {
-      var cell = cells[i];
-      r = cell.gs$cell.row - 1;
-      c = cell.gs$cell.col - 1;
+    // for (var i = 0; i < cells.length; i++) {
+    //   var cell = cells[i];
+    //   r = cell.gs$cell.row - 1;
+    //   c = cell.gs$cell.col - 1;
 
-      if (!table[r])
-        table[r] = [];
+    //   if (!table[r])
+    //     table[r] = [];
 
-      table[r][c] = cell.content.$t;
-    }
+    //   table[r][c] = cell.content.$t;
+    // }
 
     //normalize
     var db = [];
     var head = table[0];
-    var guides = [];
 
     //db
     for (r = 1; r < table.length; r++) {
