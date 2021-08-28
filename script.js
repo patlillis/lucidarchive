@@ -147,7 +147,7 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
     });
 
     //unlabeled fields
-    var sortFields = head.slice(end);
+    var sortFields = head.slice(end).filter(field => !!field);
     var unlabeledFields = ['Date', 'Genre', 'Subgenre'];
     for (var i = 0; i < unlabeledFields.length; i++) {
       var j = sortFields.indexOf(unlabeledFields[i]);
