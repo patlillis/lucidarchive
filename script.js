@@ -80,11 +80,11 @@ vpApp.filter('bandcampEmbed', function($sce) {
   });
 
 vpApp.controller('MainController', function($scope, $http, $q, $window) {
-  
+
   $scope.goBack = function() {
     $window.history.back();
   };
-  
+
   $scope.dbPromise = $http.get(dbUrl).then(function(res) {
     //create table
     var cells = res.data.feed.entry;
@@ -110,11 +110,11 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
     var db = [];
     var head = table[0];
     var guides = [];
-    
+
     //guide scope
     var start = head.indexOf('UID');
     var end = head.indexOf('Art');
-    
+
     var guideCells = tableInput[0].slice(start, end);
     var guideFilter = function(a, i) {
       return 0 === guideCells[i].indexOf('=HYPERLINK(');
@@ -123,7 +123,7 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
     $scope.guideUrls = guideCells.filter(guideFilter).map(function(a) {
       return a.split('"')[1];
     });
-    
+
     //unlabeled fields
     var sortFields = head.slice(end);
     var unlabeledFields = ['Date', 'Genre', 'Subgenre'];
@@ -133,19 +133,19 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
         sortFields.splice(j + 1, 0, unlabeledFields[i] + unlabeledSuffix);
     }
     $scope.sortFields = sortFields;
-    
+
     //db scope
     for (r = 1; r < table.length; r++) {
       if (!table[r])
         continue;
-      
+
       var dbRow = {};
-      
+
       for (c = 0; c < head.length - 1; c++) {
-        
+
         if (!tableInput[r][c])
           continue;
-        
+
         if ('Art' === head[c]) {
           var arr = tableInput[r][c].split('"');
           dbRow[head[c]] = arr[1];
@@ -159,12 +159,12 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
 
       db.push(dbRow);
     }
-    
+
     $scope.db = db;
   });
-  
+
   $scope.dbGuideTextPromise = $http.get(dbGuideText).then(function(res) {
-    
+
     //get guide text labels
     var cells = res.data.feed.entry;
     var table = [];
@@ -180,40 +180,40 @@ vpApp.controller('MainController', function($scope, $http, $q, $window) {
 
       table[r][c] = cell.content.$t;
     }
-    
+
     //normalize
     var db = [];
     var head = table[0];
     var guides = [];
-    
+
     //db
     for (r = 1; r < table.length; r++) {
       if (!table[r])
         continue;
-      
+
       var dbRow = {};
-      
+
       for (c = 0; c < head.length - 1; c++) {
-        
+
         if (!table[r][c])
           continue;
-        
+
         dbRow[head[c]] = table[r][c];
       }
       dbRow[head[head.length - 1]] = table[r].slice(c);
 
       db.push(dbRow);
     }
-    
+
     $scope.dbGuideText = db;
-    
+
   });
 });
 
 vpApp.controller('ListController', function($scope, $routeParams, $rootScope, $cacheFactory) {
-  
+
   $rootScope.title = '';
-  
+
   //caching
   var cache = $cacheFactory.get(cacheId) || $cacheFactory(cacheId);
   $scope.$on('$locationChangeStart', function(event) {
@@ -226,13 +226,13 @@ vpApp.controller('ListController', function($scope, $routeParams, $rootScope, $c
   $scope.sortField = cache.get('sortField') || 'Date';
   var sortReverse = cache.get('sortReverse');
   $scope.sortReverse = sortReverse === undefined ? true : sortReverse;
-  
-  
+
+
   $scope.sorter = function(val) {
     var field = $scope.sortField.replace(unlabeledSuffix, '');
     return val[field];
   };
-  
+
   $scope.hasSortField = function(val) {
     var field = $scope.sortField.replace(unlabeledSuffix, '');
     return !!val[field];
@@ -240,21 +240,21 @@ vpApp.controller('ListController', function($scope, $routeParams, $rootScope, $c
 });
 
 vpApp.controller('DetailController', function($scope, $filter, $routeParams, $rootScope) {
-  
+
   $scope.$parent.dbPromise.then(function() {
     var albums = $filter('filter')($scope.$parent.db, { UID: $routeParams.uid});
     if (!albums.length)
       return console.log('none found'); //do something
-    
+
     $scope.album = albums[0];
     $rootScope.title = albums[0].Pseudonym + ' - ' + albums[0].Title;
   });
 });
 
 vpApp.controller('GuideController', function($scope, $filter, $routeParams, $q, $rootScope, $location, $cacheFactory) {
-  
+
   $rootScope.title = 'guides';
-  
+
   $scope.guideChanged = function(guide, guideFields) {
     var i = guideFields.indexOf(guide);
     if (i >= 0)
@@ -262,7 +262,7 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $q, 
     else
       console.log('unknown guide changed', guide);
   };
-  
+
   //caching
   var cache = $cacheFactory.get(cacheId) || $cacheFactory(cacheId);
   $scope.$on('$locationChangeStart', function(event) {
@@ -270,9 +270,9 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $q, 
   });
   var labeled = cache.get('labeled');
   $scope.labeled = labeled === undefined ? false : labeled;
-  
+
   $scope.isValidGuide = true;
-  
+
   $scope.$parent.dbPromise.then(function() {
     //set flag if invalid guide
     //note: guideFields[0] is UID, reserved for possible future use
@@ -280,11 +280,11 @@ vpApp.controller('GuideController', function($scope, $filter, $routeParams, $q, 
       $scope.isValidGuide = false;
     }
   });
-  
+
   $q.all([$scope.$parent.dbPromise, $scope.$parent.dbGuideTextPromise]).then(function() {
     if (!$scope.isValidGuide)
       return;
-    
+
     //valid guide
     var guide = $scope.$parent.guideFields[$routeParams.gid];
     $scope.guide = guide;
