@@ -1,2 +1,3 @@
 # lucidarchive
-http://lucidarchive.com
+https://patlillis.github.io/lucidarchive
+(forked from http://lucidarchive.com)
