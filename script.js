@@ -1,5 +1,5 @@
-var dbUrl =       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTc5uxD_o4YKNhHrHmMucQOJQ8YekoMFsjFpuV54JBSJT0SKLL0Qww3O6sTCjG9BOxP-LWFMry9fDkO/pub?output=csv&gid=0";
-var dbGuideText = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTc5uxD_o4YKNhHrHmMucQOJQ8YekoMFsjFpuV54JBSJT0SKLL0Qww3O6sTCjG9BOxP-LWFMry9fDkO/pub?output=csv&gid=265214971";
+var dbUrl =       "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdrLrc2_Km7EtnXpivgP7j4LAn4cpVNFu1m-uUfWrEKv1E17Y9vs64-RFQoepRk3xKey0V87fSSRg-/pub?output=csv&gid=0";
+var dbGuideText = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdrLrc2_Km7EtnXpivgP7j4LAn4cpVNFu1m-uUfWrEKv1E17Y9vs64-RFQoepRk3xKey0V87fSSRg-/pub?output=csv&gid=265214971";
 // https://docs.google.com/spreadsheets/d/1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0/export?id=1lQQpRjLBF_9rtDXgvON7-V-ow0szcd5OyVoRUJpPOS0&format=csv&gid=0
 
 var unlabeledSuffix = ' (unlabeled)';
